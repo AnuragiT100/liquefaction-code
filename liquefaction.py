@@ -8,22 +8,23 @@ import os
 
 O.reset()
 
-cohesive_soil = FrictMat(
-    young=1e4,
-    poisson=0.35,
-    frictionAngle=radians(12),
-    density=1600,
+# Babai River soil parameters (finer sand with some fines)
+babai_soil = FrictMat(
+    young=5e6,                # Softer soil than Bansilaghat (lower Young's modulus)
+    poisson=0.3,
+    frictionAngle=radians(28),  # Lower friction angle for silty sands
+    density=1700,             # Lower density reflecting sand with fines
 )
-soilId = O.materials.append(cohesive_soil)
+soilId = O.materials.append(babai_soil)
 
 sp = pack.SpherePack()
 sp.makeCloud(
     minCorner=(0, 0, 0),
     maxCorner=(0.1, 0.1, 0.1),
-    rMean=0.002,
-    rRelFuzz=0.3,
-    num=1000,
-    seed=1
+    rMean=0.002,      # Smaller mean radius ~2 mm for finer sands
+    rRelFuzz=0.5,     # More variability in size (poorly graded to well graded)
+    num=1500,         # More particles to reflect finer grains
+    seed=5
 )
 sp.toSimulation(material=soilId)
 
@@ -42,7 +43,7 @@ O.engines = [
 ]
 
 frequency = 0.5
-amplitude = 3000
+amplitude = 2000      # Lower amplitude representing lower loading or weaker soil
 duration = 60
 steps_per_cycle = 50
 total_steps = int(duration * frequency * steps_per_cycle)
@@ -82,6 +83,17 @@ def monitorSettlementAndRate():
 
     print(f"Time: {t:.3f}s, Settlement: {settlement:.6f} m, Rate: {rate:.6f} m/s, Force: {force_data[-1][1]:.2f} N")
 
+# Color particles based on radius to visualize grading
+for b in O.bodies:
+    if b.shape:  # skip walls or non-spheres
+        r = b.shape.radius
+        # Normalize radius for coloring between min (rMean*(1-rRelFuzz)) and max (rMean*(1+rRelFuzz))
+        r_min = 0.002 * (1 - 0.5)
+        r_max = 0.002 * (1 + 0.5)
+        color_factor = (r - r_min) / (r_max - r_min)
+        color_factor = min(max(color_factor, 0), 1)
+        b.state.color = (color_factor, 0, 1 - color_factor)  # Red to Blue gradient
+
 plot.plots = {'time': ['settlement', 'force', 'rate']}
 
 O.engines += [
@@ -93,7 +105,7 @@ qt.View()
 
 O.run(total_steps, True)
 
-desktop = os.path.expanduser("~/Desktop/Bansilghat")
+desktop = os.path.expanduser("~/Desktop/Babai")
 os.makedirs(desktop, exist_ok=True)
 
 with open(os.path.join(desktop, "settlement.csv"), "w") as f:
