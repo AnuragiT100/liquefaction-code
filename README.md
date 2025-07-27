@@ -1,39 +1,41 @@
-# DEM Simulation of Soil Behavior Using YADE
+# YADE Cyclic Settlement Simulations for Babai and Bansilaghat Rivers
 
-This repository contains YADE (Discrete Element Method) simulations for analyzing various aspects of soil behavior under cyclic loading conditions. The simulations focus on comparing properties of Babai River (loose, fine-grained soil) and Bansilaghat River (dense, coarse-grained soil).
+This repository contains YADE discrete element method (DEM) simulation scripts to analyze **cyclic settlement behavior** of soils from two rivers in Nepal:
 
-##  Files Included
-- `soil_simulation.py`: Main YADE script containing simulations for all five research topics.
-- `*_kinetic_energy.csv` and `*_porosity.csv`: Output data for each simulation topic.
-- `README.md`: This file.
+- **Babai River:** Cohesive soil (clayey, silty sands)
+- **Bansilaghat River:** Granular soil (gravelly sands)
 
-## Simulation Topics
+---
 
-1. **Particle Shape Effect**  
-   - Simulates different particle shapes: `spherical`, `angular`, and `flake` (via packing changes).
-   - Based on Babai river soil characteristics.
+## Overview
 
-2. **Grain Size Distribution Effect**  
-   - Simulates `uniform`, `well_graded`, and `poorly_graded` soils.
-   - Helps assess effect of gradation on energy dissipation and porosity.
+These scripts simulate soil response under cyclic vertical loading, recording settlement, settlement rate, and applied force over time, along with a live 3D particle view.
 
-3. **Cyclic Loading Frequency & Amplitude Effect**  
-   - Studies the effect of different loading frequencies (0.5 Hz, 1.0 Hz, 2.0 Hz) and amplitudes (0.01, 0.02, 0.04).
-   - Useful in liquefaction potential assessments.
+---
 
-4. **Density & Confining Pressure Effect**  
-   - Varies soil density (1800, 2000, 2200 kg/m³).
-   - Reflects differences in compaction and pre-consolidation.
+## Files
 
-5. **Direct Cyclic Shear Force on Surface Particles**  
-   - Applies sinusoidal shear force to particles on the surface.
-   - Compares loose Babai vs. dense Bansilaghat soil behavior.
+- `babai_river_sim.py`  
+  Simulates **cohesive soil** typical of Babai River with lower stiffness, lower friction angle, and finer particles.
 
-## Software Requirements
-- [YADE](https://yade-dem.org/)
-- Python libraries: `numpy`
+- `bansilaghat_river_sim.py`  
+  Simulates **granular soil** typical of Bansilaghat River with higher stiffness, higher friction angle, and coarser particles.
 
-##  How to Run
-1. Open YADE and load the script:
+---
+
+## Requirements
+
+- [YADE DEM software](https://yade-dem.org/) installed on Linux
+- Python 3.x (YADE comes with embedded Python)
+- Basic familiarity with running YADE scripts
+
+---
+
+## How to Run
+
+1. Place the scripts on your Linux Desktop or preferred folder.
+
+2. Open terminal and run:
+
    ```bash
-   yade soil_simulation.py
+   yade ~/Desktop/babai_river_sim.py
